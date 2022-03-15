@@ -1,4 +1,5 @@
-Alexandra Dedok 2022
+Python Crash Course, 2nd Edition is set in New Baskerville, Futura, Dogma,
+and The Sans Mono Condensed. By Eric Matthes, 2019.
 
 In Alien Invasion, the player controls a rocket ship that appears
 at the bottom center of the screen. The player can move the ship
