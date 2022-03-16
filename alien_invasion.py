@@ -34,9 +34,12 @@ class AlienInvasion:
         while True:
             # Updating all this stuff with every loop 
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+                
             self._update_screen()
 
     def _create_fleet(self):
