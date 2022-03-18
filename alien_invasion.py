@@ -167,8 +167,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
-            self.settings.alien_speed += 0.1
-            self.settings.fleet_drop_speed += 0.5
+            self.settings.increase_speed()
 
     def _update_aliens(self):
         """Update the positions of all aliens in the fleet.
