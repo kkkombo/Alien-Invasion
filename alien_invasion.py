@@ -9,6 +9,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -23,12 +24,15 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
         # Create an instance to store game statistics
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
         # Creating bullets group
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
+
+        #self.stats.high_score = self._get_high_score()
 
         # Make the Play Button
         self.play_button = Button(self, "Play")
@@ -135,7 +139,10 @@ class AlienInvasion:
         # Reset game statistics before starting new game
         self.stats.reset_stats()
         self.stats.game_active = True
-
+        self.sb.prep_score()
+        self.sb.prep_level()
+        self.sb.prep_ships()
+        
         # Get rid of any remaining aliens annd bullets
         self.aliens.empty()
         self.bullets.empty()
@@ -165,11 +172,22 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
 
+        # Update score if alien shot
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+            self.stats.score += self.settings.alien_points
+            self.sb.prep_score()
+            self.sb.check_high_score()
+
         # Destroy existing bullets and create new fleet.
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            # Increase level.
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_aliens(self):
         """Update the positions of all aliens in the fleet.
@@ -192,6 +210,9 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+        # Draw the score information
+        self.sb.show_score()
+
         # Draw the play button if the game is inactive.
         if not self.stats.game_active:
             self.play_button.draw_button()
@@ -214,8 +235,10 @@ class AlienInvasion:
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
-            # Decrement ships_left.
+            # Decrement ships_left and update scoreboard
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
+            self.sb.write_high_score()
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
@@ -236,6 +259,9 @@ class AlienInvasion:
                 # Treat this the same as if the ship got hit.
                 self._ship_hit()
                 break
+
+    def _get_high_score(self):
+        self.stats.high_score = self.sb.read_high_score()
     
 # Make a game instance, and run the game.
 if __name__ == '__main__':
