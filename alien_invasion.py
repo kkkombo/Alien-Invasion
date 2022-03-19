@@ -32,6 +32,8 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
 
+        #self.stats.high_score = self._get_high_score()
+
         # Make the Play Button
         self.play_button = Button(self, "Play")
 
@@ -140,7 +142,7 @@ class AlienInvasion:
         self.sb.prep_score()
         self.sb.prep_level()
         self.sb.prep_ships()
-
+        
         # Get rid of any remaining aliens annd bullets
         self.aliens.empty()
         self.bullets.empty()
@@ -236,6 +238,7 @@ class AlienInvasion:
             # Decrement ships_left and update scoreboard
             self.stats.ships_left -= 1
             self.sb.prep_ships()
+            self.sb.write_high_score()
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
@@ -256,6 +259,9 @@ class AlienInvasion:
                 # Treat this the same as if the ship got hit.
                 self._ship_hit()
                 break
+
+    def _get_high_score(self):
+        self.stats.high_score = self.sb.read_high_score()
     
 # Make a game instance, and run the game.
 if __name__ == '__main__':
