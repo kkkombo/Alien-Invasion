@@ -23,7 +23,7 @@ class GameStats:
         return curr_high_score_read
 
     def write_high_score(self):
-        curr_hs_read = self.stats.read_high_score()
-        if curr_hs_read < self.stats.high_score:
+        curr_hs_read = self.read_high_score()
+        if curr_hs_read < self.high_score:
             curr_hs_write = open("high_score.txt", "w")
-            curr_hs_write.write(str(self.stats.high_score))
+            curr_hs_write.write(str(self.high_score))
